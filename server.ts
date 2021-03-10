@@ -36,8 +36,7 @@ async function resolveBlockOnNode(nodeUrl: string, keyHash: string): Promise<Nod
       return null;
     });
 }
-
-async function resolveBlock(keyHash: string, nodeUrl: string, height: number|undefined = undefined): Promise<NodeBlock | null> {
+async function resolveBlock(keyHash: string, nodeUrl: string): Promise<NodeBlock | null> {
   // if height is known, try to work with the middleware
   let block = await resolveBlockOnNode(nodeUrl, keyHash);
   console.log('CHECKING HERE', block);
@@ -65,7 +64,7 @@ async function backTraceOnNode(nodeUrl: string, topKeyBlock: NodeBlock) {
   let keepSearching = !(await isBlockInDB(topKeyBlock.prev_key_hash));
   let currentBlock = topKeyBlock;
   while (keepSearching) {
-    const lastBlock = await resolveBlock(currentBlock.prev_key_hash, nodeUrl, currentBlock.height);
+    const lastBlock = await resolveBlock(currentBlock.prev_key_hash, nodeUrl);
     if (!lastBlock) {
       throw Error(`Could not find block ${currentBlock.prev_key_hash} in node`);
     }
