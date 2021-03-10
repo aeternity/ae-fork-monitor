@@ -1,0 +1,25 @@
+{
+  "name": "ae-fork-monitor",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "git@github.com:aeternity/ae-fork-monitor.git",
+  "author": "kenodressel <hire@keno.digital>",
+  "license": "MIT",
+  "scripts": {
+    "db:create": "yarn sequelize-cli --config config/config.js --env development db:migrate"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.22.1",
+    "sequelize-cli": "^6.2.0",
+    "sequelize-mig": "3.0.0",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "pg": "^8.5.1",
+    "sequelize": "^6.5.0"
+  }
+}

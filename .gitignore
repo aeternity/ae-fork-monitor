@@ -1,0 +1,12 @@
+node_modules
+.aeproject-store
+.DS_Store
+*.iml
+.idea
+database.sqlite
+.env
+/logs/*.log
+./images/
+/traces/*.json
+docker-compose.override.yml
+swagger.json
