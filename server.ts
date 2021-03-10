@@ -6,11 +6,6 @@ const nodes = [
   'http://monitor.aeternity.art:3113/v2',
 ];
 let intervalId: ReturnType<typeof setInterval>;
-const allCaches: {
-  topHeight: number,
-  bottomHeight: number,
-  blocks: Record<string, NodeBlock>,
-}[] = [];
 
 interface NodeBlock {
   height: number,
@@ -18,18 +13,6 @@ interface NodeBlock {
   // eslint-disable-next-line camelcase
   prev_key_hash: string,
   timestamp: number
-}
-
-async function queryMDW(start: number, end: number, limit = (end - start) + 1): Promise<NodeBlock[]> {
-  console.time(`Query MDW from ${start} to ${end}`);
-  return axios.get(`https://mainnet.aeternity.io/mdw/blocks/gen/${start}-${end}?limit=${limit}`)
-    .then(({ data: { data } }: { data: {data :NodeBlock[]} }) => data)
-    .catch((e: Error) => {
-      console.error(`https://mainnet.aeternity.io/mdw/blocks/gen/${start}-${end}?limit=${limit}: ${e.message}`);
-      return [];
-    }).finally(() => {
-      console.timeEnd(`Query MDW from ${start} to ${end}`);
-    });
 }
 
 function prepForDB(block: NodeBlock) {
@@ -42,29 +25,7 @@ function prepForDB(block: NodeBlock) {
 }
 
 async function backTrack(nodeUrl: string, chainEndBlock: NodeBlock) {
-  // assume happy path
-
-  // const end = chainEndBlock.height;
-  // const start = await Block.max('height') ?? 0;
-
-  // prefill cache
-
   await backTraceOnNode(nodeUrl, chainEndBlock);
-
-  /*
-  let blocks: NodeBlock[];
-  if (end - start < 10) {
-    // try to sync from top to last known block
-  } else if (end - start < 1000) {
-    blocks = await queryMDW(start, end);
-  } else {
-    blocks = await queryMDW(start, start + 999);
-  }
-  await Block.bulkCreate(prepForDB(blocks));
-*/
-  // long range sync
-  // split into 1k segments
-  // start from bottom to top
 }
 
 async function resolveBlockOnNode(nodeUrl: string, keyHash: string): Promise<NodeBlock | null> {
@@ -74,19 +35,6 @@ async function resolveBlockOnNode(nodeUrl: string, keyHash: string): Promise<Nod
       console.error(e.message);
       return null;
     });
-}
-
-async function addCache(height: number, queryDistance = 999) {
-  const queryResult = await queryMDW(height - queryDistance, height);
-  console.log(`Adding cache from ${height - queryDistance} to ${height}`);
-  allCaches.push({
-    topHeight: height,
-    bottomHeight: height - queryDistance,
-    blocks: queryResult.reduce((acc, curr) => ({
-      ...acc,
-      [curr.hash]: curr,
-    }), {}),
-  });
 }
 
 async function resolveBlock(keyHash: string, nodeUrl: string, height: number|undefined = undefined): Promise<NodeBlock | null> {
@@ -102,21 +50,6 @@ async function resolveBlock(keyHash: string, nodeUrl: string, height: number|und
     }
   }
   return block;
-  /*
-  if (height) {
-    // cache hit
-    const cacheHit = allCaches.find(cache => height <= cache.topHeight && height >= cache.bottomHeight);
-    if (cacheHit) {
-      // retrieve from cache
-      if (cacheHit.blocks[keyHash]) {
-        return cacheHit.blocks[keyHash];
-      }
-      // else fetch from node
-    } else {
-      // update cache with current block at top since the sync is always backwards
-      await addCache(height);
-    }
-  } */
 }
 
 async function isBlockInDB(hash: string) {
