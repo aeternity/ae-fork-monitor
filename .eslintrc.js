@@ -17,6 +17,7 @@ module.exports = {
     'no-extend-native': 'off',
     'max-len': ['error', { code: 150 }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
     'no-plusplus': 'off',
     'func-names': ['error', 'never'],
