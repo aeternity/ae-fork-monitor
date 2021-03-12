@@ -3,14 +3,14 @@ const Sequelize = require("sequelize");
 /**
  * Actions summary:
  *
- * createTable() => "Blocks", deps: []
+ * createTable() => "Blocks", deps: [Blocks]
  *
  */
 
 const info = {
   revision: 1,
   name: "add_blocks",
-  created: "2021-03-10T12:42:13.414Z",
+  created: "2021-03-12T10:46:28.889Z",
   comment: "",
 };
 
@@ -23,6 +23,14 @@ const migrationCommands = (transaction) => [
         height: { type: Sequelize.INTEGER, field: "height" },
         keyHash: { type: Sequelize.STRING, field: "keyHash", primaryKey: true },
         timestamp: { type: Sequelize.DATE, field: "timestamp" },
+        lastKeyHash: {
+          type: Sequelize.STRING,
+          onUpdate: "CASCADE",
+          onDelete: "NO ACTION",
+          references: { model: "Blocks", key: "keyHash" },
+          allowNull: true,
+          field: "lastKeyHash",
+        },
         createdAt: {
           type: Sequelize.DATE,
           field: "createdAt",

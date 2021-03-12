@@ -16,6 +16,17 @@
                     "field": "timestamp",
                     "seqType": "Sequelize.DATE"
                 },
+                "lastKeyHash": {
+                    "field": "lastKeyHash",
+                    "allowNull": true,
+                    "references": {
+                        "model": "Blocks",
+                        "key": "keyHash"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.STRING"
+                },
                 "createdAt": {
                     "allowNull": false,
                     "field": "createdAt",
