@@ -1,17 +1,17 @@
 import { updateChainEnds } from './modules/chainWalker';
+import { checkForForks } from './modules/detector';
+import { alertEveryone } from './modules/alert';
 
-let intervalId: ReturnType<typeof setInterval>;
+const waitTimeout: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1000000000);
 
 async function main() {
-  await updateChainEnds();
+  // await updateChainEnds();
+  const forks = await checkForForks();
+  console.log(forks);
+  // await alertEveryone(forks);
   // start interval after first sync
-  if (!intervalId) {
-    clearTimeout(waitTimeout);
-    intervalId = setInterval(() => main(), 180 * 1000);
-  }
+  if (waitTimeout) clearTimeout(waitTimeout);
+  setTimeout(() => main(), 180 * 1000);
 }
 
 main();
-const waitTimeout: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1000000000);
-// check for blocks, that have no next block referencing back --> expensive but can be done on chain ends & new blocks only
-// follow the chain until a block is found, that has two next blocks
