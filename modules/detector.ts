@@ -2,7 +2,14 @@
 // do alerts
 import { Sequelize, Op } from 'sequelize';
 import { sequelize, Block } from '../models';
-import { forwardQuery } from '../queries/chainWalking';
+import { Block as BlockType } from '../models/block';
+import { forwardQuery } from '../queries/followChain';
+
+export interface Fork {
+  forkLength: number,
+  forkStart: BlockType,
+  forkEnd: BlockType,
+}
 
 async function forwardSearch(startHash: string) {
   return sequelize.query(forwardQuery(startHash), {
@@ -11,7 +18,7 @@ async function forwardSearch(startHash: string) {
   });
 }
 
-export async function checkForForks() {
+export async function checkForForks(): Promise<Fork[]> {
   // here it can be assumed that the tracing is finished
 
   // find the hashes of all blocks that have the two next blocks
@@ -32,13 +39,12 @@ export async function checkForForks() {
 
   return Promise.all(forkBeginnings.map(async startBlock => {
     const fork = await forwardSearch(startBlock.keyHash);
-    // find max height
-    const forkEndHeight = Math.max(...fork.map(block => block.height));
-    const forkEndBlock = fork.find(block => block.height === forkEndHeight);
+    // forks are sorted by height, just take the last block
+    const forkEndBlock = fork[fork.length - 1];
     return {
-      forkLength: forkEndHeight - startBlock.height,
-      forkStartHash: startBlock,
-      forkEndHash: forkEndBlock,
+      forkLength: forkEndBlock.height - startBlock.height + 1, // start block is the first block in the fork, so +1 for full fork length
+      forkStart: startBlock,
+      forkEnd: forkEndBlock,
     };
   }));
 }

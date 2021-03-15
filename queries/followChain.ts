@@ -14,7 +14,8 @@ export const forwardQuery = (startHash: string) => `WITH RECURSIVE subordinates 
               INNER JOIN subordinates s ON s."keyHash" = b."lastKeyHash"
 )
 SELECT *
-FROM subordinates;
+FROM subordinates
+ORDER BY height ASC;
 `;
 
 export const backwardQuery = (startHash: string) => `WITH RECURSIVE subordinates AS (
@@ -33,5 +34,6 @@ export const backwardQuery = (startHash: string) => `WITH RECURSIVE subordinates
              INNER JOIN subordinates s ON s."lastKeyHash" = b."keyHash"
 )
 SELECT *
-FROM subordinates;
+FROM subordinates
+ORDER BY height ASC;
 `;

@@ -11,7 +11,7 @@ interface BlockAttributes {
 }
 // Some fields are optional when calling UserModel.create() or UserModel.build()
 interface BlockCreationAttributes extends Optional<BlockAttributes, 'lastKeyHash'> {}
-class Block extends Model<BlockAttributes, BlockCreationAttributes> implements BlockAttributes {
+export class Block extends Model<BlockAttributes, BlockCreationAttributes> implements BlockAttributes {
   public height!: number;
 
   public keyHash!: string;
