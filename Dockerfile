@@ -8,4 +8,6 @@ RUN yarn install
 
 COPY . /app
 
-CMD yarn run db:create; node index.js
+RUN yarn compile
+
+CMD yarn run db:create; node server.js
