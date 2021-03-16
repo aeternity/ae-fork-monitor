@@ -13,6 +13,8 @@ interface NodeBlock {
   prev_key_hash: string,
   time: number
 }
+let lineLength = 0;
+const maxLineLength = 50;
 
 function prepForDB(block: NodeBlock) {
   return {
@@ -60,6 +62,11 @@ async function isBlockInDB(hash: string) {
 
 async function insertBlock(block:NodeBlock) {
   process.stdout.write('.');
+  lineLength++;
+  if (lineLength > maxLineLength) {
+    process.stdout.write('\n');
+    lineLength = 0;
+  }
   return Block.create(prepForDB(block));
 }
 async function insertReference(topBlock:NodeBlock) {
@@ -76,7 +83,7 @@ async function backTraceOnNode(nodeUrl: string, topKeyBlock: NodeBlock) {
       throw Error(`Could not find block ${currentBlock.prev_key_hash} in node`);
     }
     try {
-      if (lastBlock.height % 250 === 0) console.log(`Inserting block at height ${lastBlock.height} with hash ${lastBlock.hash}`);
+      if (lastBlock.height % 250 === 0) console.log(`\nInserting block at height ${lastBlock.height} with hash ${lastBlock.hash}`);
       await insertBlock(lastBlock);
       // do it async
       insertReference({ ...currentBlock });

@@ -21,6 +21,7 @@
     "@types/sequelize": "^4.28.9",
     "axios": "^0.21.1",
     "pg": "^8.5.1",
-    "sequelize": "^6.5.0"
+    "sequelize": "^6.5.0",
+    "telegraf": "^4.2.1"
   }
 }

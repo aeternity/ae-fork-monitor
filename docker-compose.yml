@@ -6,6 +6,8 @@ services:
     depends_on:
       - fork-postgres
     environment:
+      - BOT_TOKEN=
+      - CHAT_ID=
       # all optional
       - POSTGRES_PASSWORD=postgres # replace with your own credentials
       - POSTGRES_USER=postgres # replace with your own credentials

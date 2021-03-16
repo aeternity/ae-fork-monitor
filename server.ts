@@ -1,14 +1,13 @@
 import { updateChainEnds } from './modules/chainWalker';
 import { checkForForks } from './modules/detector';
-import { alertEveryone } from './modules/alert';
+import { alertForForks } from './modules/alert';
 
 const waitTimeout: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1000000000);
 
 async function main() {
-  // await updateChainEnds();
+  await updateChainEnds();
   const forks = await checkForForks();
-  console.log(forks);
-  // await alertEveryone(forks);
+  await alertForForks(forks);
   // start interval after first sync
   if (waitTimeout) clearTimeout(waitTimeout);
   setTimeout(() => main(), 180 * 1000);
