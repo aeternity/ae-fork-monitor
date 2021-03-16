@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "db:create": "yarn sequelize-cli --config config/config.js --env development db:migrate",
-    "compile": "tsc --noEmit"
+    "compile": "tsc"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
