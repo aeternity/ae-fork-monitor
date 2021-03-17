@@ -60,6 +60,11 @@ async function isBlockInDB(hash: string) {
   return Boolean(await Block.findOne({ where: { keyHash: hash }, raw: true }));
 }
 
+function log(message: string) {
+  lineLength = 0;
+  console.log(`\n${message}`);
+}
+
 async function insertBlock(block:NodeBlock) {
   process.stdout.write('.');
   lineLength++;
@@ -80,10 +85,12 @@ async function backTraceOnNode(nodeUrl: string, topKeyBlock: NodeBlock) {
   while (keepSearching) {
     const lastBlock = await resolveBlock(nodeUrl, currentBlock.prev_key_hash);
     if (!lastBlock) {
-      throw Error(`Could not find block ${currentBlock.prev_key_hash} in node`);
+      log(`Could not find block ${currentBlock.prev_key_hash} anywhere`);
+      break;
     }
     try {
-      if (lastBlock.height % 250 === 0) console.log(`\nInserting block at height ${lastBlock.height} with hash ${lastBlock.hash}`);
+      if (lastBlock.height % 250 === 0) log(`Inserting block at height ${lastBlock.height} with hash ${lastBlock.hash}`);
+      // await initial insert
       await insertBlock(lastBlock);
       // do it async
       insertReference({ ...currentBlock });
@@ -91,7 +98,7 @@ async function backTraceOnNode(nodeUrl: string, topKeyBlock: NodeBlock) {
     } catch (e) {
       // it already exists
       if (!e.original?.message.includes('duplicate key value violates unique constraint "Blocks_pkey"')) console.error(e);
-      console.log(`Found existing block ${lastBlock.hash}. Stopping backwards search.`);
+      log(`Found existing block ${lastBlock.hash}. Stopping backwards search.`);
       keepSearching = false;
     }
   }
@@ -102,7 +109,6 @@ export async function getChainEnds() {
   const queryResults = await Promise.all(nodes.map(async nodeUrl => {
     const keyBlockHashes: string[] = await axios.get(`${nodeUrl}/status/chain-ends`).then(({ data }: {data: string[] }) => data).catch((e: Error) => {
       console.error(e.message);
-      console.log('where');
       return [];
     });
     return keyBlockHashes.map(hash => ({ hash, nodeUrl }));
@@ -125,9 +131,9 @@ export async function updateChainEnds() {
   // back trace blocks
   await Promise.all(uniqueChainEnds.map(chainEnd => {
     if (chainEnd.block === null) {
-      return console.error(`Could not find block ${chainEnd.hash} on node ${chainEnd.nodeUrl}`);
+      return log(`Could not find block ${chainEnd.hash} on node ${chainEnd.nodeUrl}`);
     }
     return backTrack(chainEnd.nodeUrl, chainEnd.block);
   }));
-  console.log('Finished initial insert');
+  log('Finished initial insert');
 }
