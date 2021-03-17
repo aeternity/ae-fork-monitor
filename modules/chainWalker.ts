@@ -2,7 +2,11 @@ import axios from 'axios';
 // @ts-ignore
 import { Block } from '../models';
 
+// query mainnet multiple times
+// this maybe yields the desired block
 const nodes = [
+  'https://mainnet.aeternity.io/v2',
+  'https://mainnet.aeternity.io/v2',
   'https://mainnet.aeternity.io/v2',
 ];
 
@@ -49,7 +53,7 @@ async function resolveBlock(nodeUrl: string, keyHash: string): Promise<NodeBlock
   if (block === null) {
     // eslint-disable-next-line no-restricted-syntax
     for (const otherNodeUrl of nodes) {
-      if (nodeUrl !== otherNodeUrl) block = await resolveBlockOnNode(otherNodeUrl, keyHash);
+      block = await resolveBlockOnNode(otherNodeUrl, keyHash);
       if (block !== null) return block;
     }
   }
