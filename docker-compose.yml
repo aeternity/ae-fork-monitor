@@ -16,13 +16,13 @@ services:
     restart: unless-stopped
 
   fork-postgres:
-    image: postgres:12
+    image: postgres
     hostname: fork-postgres
     restart: unless-stopped
     container_name: fork-postgres
-    ports:
-      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=postgres # replace with your own credentials
       - POSTGRES_USER=postgres # replace with your own credentials
       - POSTGRES_DB=mainnet
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
