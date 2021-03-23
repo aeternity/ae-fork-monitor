@@ -5,9 +5,7 @@ import { Block } from '../models';
 // query mainnet multiple times
 // this maybe yields the desired block
 const nodes = [
-  'https://mainnet.aeternity.io/v2',
-  'https://mainnet.aeternity.io/v2',
-  'https://mainnet.aeternity.io/v2',
+  'http://206.81.24.215:3013/v2',
 ];
 
 interface NodeBlock {
