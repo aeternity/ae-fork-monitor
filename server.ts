@@ -1,6 +1,7 @@
 import { updateChainEnds } from './modules/chainWalker';
 import { checkForForks } from './modules/detector';
 import { alertForForks } from './modules/alert';
+import './modules/api';
 
 const waitTimeout: ReturnType<typeof setTimeout> = setTimeout(() => {}, 1000000000);
 

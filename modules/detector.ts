@@ -1,5 +1,3 @@
-// determine length
-// do alerts
 import { Sequelize, Op } from 'sequelize';
 import { sequelize, Block } from '../models';
 import { Block as BlockType } from '../models/block';
