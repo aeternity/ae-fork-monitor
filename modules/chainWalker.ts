@@ -99,9 +99,13 @@ async function backTraceOnNode(nodeUrl: string, topKeyBlock: NodeBlock) {
       currentBlock = lastBlock;
     } catch (e) {
       // it already exists
-      if (!e.original?.message.includes('duplicate key value violates unique constraint "Blocks_pkey"')) console.error(e);
-      log(`Found existing block ${lastBlock.hash}. Stopping backwards search.`);
-      keepSearching = false;
+      if (!e.original?.message.includes('duplicate key value violates unique constraint "Blocks_pkey"')) {
+        console.error(e);
+      } else {
+        insertReference({ ...currentBlock });
+        log(`Found existing block ${lastBlock.hash}. Stopping backwards search.`);
+        keepSearching = false;
+      }
     }
   }
 }
