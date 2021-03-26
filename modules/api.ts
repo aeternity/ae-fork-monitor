@@ -13,7 +13,7 @@ app.get('/', async (req: Request, res: Response) => {
   const forks = await checkForForks();
   const height = await Block.max('height');
   const newestBlocks = await Block.findAll({ where: { height }, raw: true });
-  res.render(forks.length === 0 ? 'home' : 'fork', {
+  res.render('home', {
     height,
     forks,
     newestBlocks,
