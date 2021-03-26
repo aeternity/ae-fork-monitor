@@ -5,6 +5,8 @@ services:
     container_name: ae-fork-detection
     depends_on:
       - fork-postgres
+    ports:
+      - 3000:3000
     environment:
       - BOT_TOKEN=
       - CHAT_ID=
