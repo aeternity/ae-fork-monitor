@@ -19,7 +19,7 @@ async function sendMessage(message: string) {
 
 export async function alertForForks(forks: Fork[]) {
   // ALERT RULES
-  const MINIMUM_FORK_LENGTH = 1;
+  const MINIMUM_FORK_LENGTH = 2;
 
   // Filter longest fork (its not a fork, its the main chain)
   forks.sort((a, b) => b.forkLength - a.forkLength).shift();
