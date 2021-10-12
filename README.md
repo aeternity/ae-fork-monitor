@@ -1,3 +1,7 @@
+# ARCHIVED
+
+### This project is no longer active superseded by [ae_canary](https://github.com/aeternity/ae_canary).
+
 # Fork Detection
 
 The following steps are repeated with pauses of 180 seconds in between.
